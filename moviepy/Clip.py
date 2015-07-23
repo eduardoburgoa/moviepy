@@ -442,22 +442,22 @@ class Clip:
     def iter_frames(self, fps=None, with_times = False, progress_bar=False,
                     dtype=None):
         """ Iterates over all the frames of the clip.
-        
+
         Returns each frame of the clip as a HxWxN np.array,
         where N=1 for mask clips and N=3 for RGB clips.
-        
+
         This function is not really meant for video editing.
         It provides an easy way to do frame-by-frame treatment of
         a video, for fields like science, computer vision...
-        
+
         The ``fps`` (frames per second) parameter is optional if the
         clip already has a ``fps`` attribute.
 
-        Use dtype="uint8" when using the pictures to write video, images... 
-        
+        Use dtype="uint8" when using the pictures to write video, images...
+
         Examples
         ---------
-        
+
         >>> # prints the maximum of red that is contained
         >>> # on the first line of each frame of the clip.
         >>> from moviepy.editor import VideoFileClip
@@ -466,27 +466,32 @@ class Clip:
                      for frame in myclip.iter_frames()])
         """
 
+        nframes = int(self.duration*fps)+1
+
         def generator():
-        
+
             for t in np.arange(0, self.duration, 1.0/fps):
-        
+
                 frame = self.get_frame(t)
-        
+
                 if (dtype is not None) and (frame.dtype != dtype):
-        
+
                     frame = frame.astype(dtype)
 
+                if self.iterframe_callback is not None:
+
+                    self.iterframe_callback(t*fps, frame=frame, nframes=nframes)
+
                 if with_times:
-        
+
                     yield t, frame
-        
+
                 else:
-        
+
                     yield frame
-        
+
         if progress_bar:
-        
-            nframes = int(self.duration*fps)+1
+
             return tqdm(generator(), total=nframes)
 
         return generator()

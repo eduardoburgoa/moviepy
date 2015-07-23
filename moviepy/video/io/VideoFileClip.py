@@ -46,7 +46,7 @@ class VideoFileClip(VideoClip):
 
     def __init__(self, filename, has_mask=False,
                  audio=True, audio_buffersize = 200000,
-                 audio_fps=44100, audio_nbytes=2, verbose=False):
+                 audio_fps=44100, audio_nbytes=2, verbose=False, iterframe_callback=None):
         
         VideoClip.__init__(self)
         
@@ -80,6 +80,8 @@ class VideoFileClip(VideoClip):
                                        buffersize= audio_buffersize,
                                        fps = audio_fps,
                                        nbytes = audio_nbytes)
+
+        self.iterframe_callback = iterframe_callback
 
     def __del__(self):
       """ Close/delete the internal reader. """

@@ -94,7 +94,7 @@ class VideoClip(Clip):
     """
 
     def __init__(self, make_frame=None, ismask=False, duration=None,
-                 has_constant_size=True):
+                 has_constant_size=True, iterframe_callback=None):
         Clip.__init__(self)
         self.mask = None
         self.audio = None
@@ -108,6 +108,7 @@ class VideoClip(Clip):
         if duration is not None:
             self.duration = duration
             self.end = duration
+        self.iterframe_callback = iterframe_callback
 
     @property
     def w(self):
